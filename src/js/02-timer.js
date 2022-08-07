@@ -10,9 +10,9 @@ const varSeconds = document.querySelector('[data-seconds]');
 
 
 
-const bntStart = document.querySelector('[data-start]');
-bntStart.addEventListener('click', onStart);
-bntStart.disabled = true;
+const btnStart = document.querySelector('[data-start]');
+btnStart.addEventListener('click', checkFunction);
+btnStart.disabled = true;
 
 const options = {
   enableTime: true,
@@ -20,31 +20,31 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    // console.log(selectedDates[0]);
-    if (selectedDates[0] < Date.now()) {
+    const newDate = selectedDates[0].getTime();
+    if (newDate < Date.now()) {
+      btnStart.disabled = true;
       Notiflix.Notify.failure('Please choose a date in the future');
-      bntStart.disabled = true;
     } else {
-      bntStart.disabled = false;
+      btnStart.disabled = false;
     }
   },
 };
-const dateEl = document.querySelector('#datetime-picker');
-flatpickr(dateEl, options);
+const inputDate = document.querySelector('#datetime-picker');
+flatpickr(inputDate, options);
 
-function onStart() {
-  const timerId = setInterval(() => {
-    const selectedDate = new Date(dateEl.value);
-    const delta = selectedDate - Date.now();
-    const { days, hours, minutes, seconds } = convertMs(delta);
+function checkFunction() {
+  const timer = setInterval(() => {
+    const puttedDate = new Date(inputDate.value);
+    const difference = puttedDate - Date.now();
+    const { days, hours, minutes, seconds } = convertMs(difference);
 
     varDays.textContent = addLeadingZero(days);
     varHours.textContent = addLeadingZero(hours);
     varMinutes.textContent = addLeadingZero(minutes);
     varSeconds.textContent = addLeadingZero(seconds);
 
-    if (delta <= 999) {
-      clearInterval(timerId);
+    if (difference <= 1000) {
+      clearInterval(timer);
     }
   }, 1000);
 }
